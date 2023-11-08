@@ -5,3 +5,5 @@ json_txt = ('{"messages": [{"message": "This is the first message", "timestamp":
 obj = json.loads(json_txt)
 
 print(obj["messages"][1]['message'])
+
+# And this is a second message
