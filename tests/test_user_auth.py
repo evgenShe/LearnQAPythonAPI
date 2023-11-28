@@ -32,7 +32,7 @@ class TestUserAuth(BaseCase):
             response2,
             "user_id",
             self.user_id_from_auth_method,
-            "User id from auth method is not equal to user id from heck method"
+            "User id from auth method is not equal to user id from check method"
         )
 
     @pytest.mark.parametrize("condition", exclude_params)
