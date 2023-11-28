@@ -1,6 +1,5 @@
 import pytest
 import requests
-import json
 from lib.assertions import Assertions
 
 
@@ -32,21 +31,14 @@ class TestUserAgent:
         device = response.json()['device']
 
         Assertions.assert_json_value_by_name(
-            response,
-            "platform",
-            user_agent[1],
+            response, "platform", user_agent[1],
             f"User agent '{user_agent[1]}' does not match the parameter platform: '{platform}'"
-
         )
         Assertions.assert_json_value_by_name(
-            response,
-            'browser',
-            user_agent[2],
+            response, 'browser', user_agent[2],
             f"User agent '{user_agent[2]}' does not match the parameter browser: '{browser}'"
         )
         Assertions.assert_json_value_by_name(
-            response,
-            'device',
-            user_agent[3],
+            response, 'device', user_agent[3],
             f"User agent '{user_agent[3]}' does not match the parameter device: '{device}'"
         )
