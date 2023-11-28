@@ -1,10 +1,10 @@
 import requests
 
+from lib.base_case import BaseCase
 
-class TestHomeWorkCookie:
+
+class TestHomeWorkCookie(BaseCase):
     def test_homework_cookie(self):
         response = requests.get("https://playground.learnqa.ru/api/homework_cookie")
-        # print(response.cookies)
-        cookie = response.cookies.get("HomeWork")
-        # print(cookie)
-        assert cookie == "hw_value", "There is no 'hw_value' in the response"
+        cookie_value = self.get_cookie(response, "HomeWork")
+        assert cookie_value == "hw_value", "There is no 'hw_value' in the response"
