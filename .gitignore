@@ -24,4 +24,4 @@ ENV/
 env.bak/
 venv.bak/
 logs/*
-
+test_results/*
