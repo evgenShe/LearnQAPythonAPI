@@ -2,9 +2,12 @@ from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from lib.my_requests import MyRequests
 from lib.data_generator import data_generator
+import allure
 
 
+@allure.epic("User edit method cases")
 class TestUserEdit(BaseCase):
+    @allure.description("This test edit just created user")
     def test_edit_just_created_user(self):
         register_data = self.prepare_registration_data()
         response1 = MyRequests.post("/user", data=register_data)
@@ -51,6 +54,7 @@ class TestUserEdit(BaseCase):
             "Wrongname of the user after edit"
         )
 
+    @allure.description("This test edit user not authorized")
     def test_edit_user_not_authorized(self):
         # EDIT
         new_name = "Ivan"
@@ -64,6 +68,7 @@ class TestUserEdit(BaseCase):
         assert response.content.decode(
             "utf-8") == "Auth token not supplied", f"Unexpected response content {response.content}"
 
+    @allure.description("This test edit another user")
     def test_edit_another_user(self):
         # NEW USER 1
         reg_data1 = self.prepare_registration_data()
@@ -102,6 +107,7 @@ class TestUserEdit(BaseCase):
         )
         Assertions.assert_code_status(response4, 200)
 
+    @allure.description("This test edit wrong email")
     def test_edit_wrong_email(self):
         # NEW USER
         reg_data = self.prepare_registration_data()
@@ -135,39 +141,40 @@ class TestUserEdit(BaseCase):
         assert response3.content.decode(
             "utf-8") == "Invalid email format", f"Unexpected response content {response3.content}"
 
+    @allure.description("This test edit short firstname")
     def test_edit_short_firstname(self):
-        # NEW USER
-        reg_data = self.prepare_registration_data()
-        response1 = MyRequests.post("/user/", data=reg_data)
+        with allure.step("Create new user"):
+            reg_data = self.prepare_registration_data()
+            response1 = MyRequests.post("/user/", data=reg_data)
 
-        Assertions.assert_code_status(response1, 200)
-        Assertions.assert_json_has_key(response1, "id")
+            Assertions.assert_code_status(response1, 200)
+            Assertions.assert_json_has_key(response1, "id")
 
-        # LOGIN USER
-        login_data = {
-            'email': reg_data['email'],
-            'password': reg_data['password']
-        }
-        response2 = MyRequests.post("/user/login", data=login_data)
+        with allure.step("Login user"):
+            login_data = {
+                'email': reg_data['email'],
+                'password': reg_data['password']
+            }
+            response2 = MyRequests.post("/user/login", data=login_data)
 
-        auth_sid = self.get_cookie(response2, "auth_sid")
-        token = self.get_header(response2, "x-csrf-token")
-        user_id = self.get_json_value(response2, "user_id")
+            auth_sid = self.get_cookie(response2, "auth_sid")
+            token = self.get_header(response2, "x-csrf-token")
+            user_id = self.get_json_value(response2, "user_id")
 
-        # EDIT FIRSTNAME
-        new_name = "Ivan"
+        with allure.step("Edit firstname"):
+            new_name = "Ivan"
 
-        response3 = MyRequests.put(
-            f"/user/{user_id}",
-            headers={"x-csrf-token": token},
-            cookies={"auth_sid": auth_sid},
-            data={"firstName": data_generator.generate_random_string(1)}
-        )
+            response3 = MyRequests.put(
+                f"/user/{user_id}",
+                headers={"x-csrf-token": token},
+                cookies={"auth_sid": auth_sid},
+                data={"firstName": data_generator.generate_random_string(1)}
+            )
 
-        Assertions.assert_code_status(response3, 400)
-        Assertions.assert_json_value_by_name(
-            response3,
-            "error",
-            "Too short value for field firstName",
-            f"Unexpected response content {response3.content}"
-        )
+            Assertions.assert_code_status(response3, 400)
+            Assertions.assert_json_value_by_name(
+                response3,
+                "error",
+                "Too short value for field firstName",
+                f"Unexpected response content {response3.content}"
+            )
