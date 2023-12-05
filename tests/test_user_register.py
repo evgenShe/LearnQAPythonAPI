@@ -72,10 +72,9 @@ class TestUserRegister(BaseCase):
         if len(username) == 1:
             Assertions.assert_code_status(response, 400)
             assert response.content.decode(
-                "utf-8") == "The value of 'username' field is too short", f"Unexpected response content {response.content}"
+                "utf-8") == "The value of 'username' field is too short", \
+                f"Unexpected response content {response.content}"
 
-            print('if : ' + username)
         elif len(username) >= 250:
             Assertions.assert_code_status(response, 200)
-            print('else : ' + username)
             Assertions.assert_json_has_key(response, "id")
