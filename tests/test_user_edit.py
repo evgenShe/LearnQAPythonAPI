@@ -169,5 +169,5 @@ class TestUserEdit(BaseCase):
             response3,
             "error",
             "Too short value for field firstName",
-            f"The field firstName was changed"
+            f"Unexpected response content {response3.content}"
         )
